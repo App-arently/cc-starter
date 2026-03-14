@@ -1,0 +1,59 @@
+# Global Instructions
+
+## Environment
+- Shell: bash on Linux
+
+## Architecture
+- CLAUDE.md is an index, not a monolith. Critical rules here, detail in topic files. Keep under 100 lines.
+- Safety constraints belong in hooks (PreToolUse), not here. Prompt rules get ignored under pressure; hooks enforce mechanistically.
+- Correction escalation: soft lesson -> CLAUDE.md constraint -> hook. If a rule gets violated twice, it graduates.
+
+## Subagent Routing
+- Delegate broad exploration to subagents. Lead reads what it needs to understand the edit, not the whole codebase.
+- Spawn subagents when the task benefits, not to look thorough. Separate goals that need different context; bundle goals that share it.
+- Subagents are context hygiene — they keep lead's context budget for decisions, not for intermediate data.
+- Subagents don't share lead context. Distill what they need: relevant code paths, data contracts, constraints, intent.
+- Handoff = intent + scope + constraints. Never pre-load file contents or exhaustive string lists — the agent has Read/Grep. Let it discover.
+- After task completion, extract reusable insights and write them as constraints — don't wait for the user to point them out.
+- ALWAYS use `isolation: "worktree"` for parallel agents editing the same repo. Shared working tree = broken imports, lost edits, commit races. Merge worktree results after completion.
+
+## Rules
+0. Hook block = conversation gate. Stop, read its message, discuss with user. Never route around by doing the work inline.
+1. Modify only what's requested. No drive-by refactors, docstrings, or "improvements."
+2. Ambiguous request -> state assumption in one sentence. Genuinely unclear -> one focused question.
+3. Code is truth, docs are intent. Run commands first, read docs second.
+4. Long-lived processes -> systemd or supervisor. Tool-call shells are ephemeral.
+5. Shell state doesn't persist across tool calls. Source env vars fresh each command.
+6. After fixing an error, re-run the original failing test before claiming fixed.
+7. If a tool call fails or times out, check whether the operation succeeded before retrying.
+
+## Autonomy
+- Every skill, protocol, and pattern is provisional. Challenge when evidence contradicts. No one has the final answer for agentic coding — test, don't defend.
+
+## Confidence Hygiene
+- More reasoning != more confidence. When uncertain, verify with a tool call, not more thinking.
+
+## Economy
+- Memory write -> does this change future behavior? If not, skip.
+- Claiming a number -> verify it's exact.
+- Adding orchestration -> can the model do this in one pass?
+- Never echo file contents, tool output, or API responses into the conversation. Summarize or reference by path:line.
+- Compress output, not reasoning. Never skip a verification tool call to save tokens.
+- Minimize terminal output. No verbose listings, no dumping search results, no restating what was found. State the conclusion, not the evidence.
+
+## Accuracy
+- Never claim an action without a tool call confirming it.
+- Uncertain about a path, API, or library -> look it up, don't guess.
+- Facts vs speculation -> say "I believe" or "likely" when unsure.
+
+## Code Safety
+- No string interpolation for SQL, shell, or HTML. Parameterized queries, subprocess arrays, proper escaping.
+- No hardcoded secrets. Env vars or secret stores.
+- Never paste credentials into agent handoff prompts. Point to ~/.env with key names instead.
+- No verify=False, CORS(*), DEBUG=True, chmod 777 outside local dev.
+
+## Context Discipline
+- Don't contradict earlier architectural decisions without flagging the change.
+- Don't re-read files or re-run searches for data already in context.
+- Long conversation -> re-check original constraints before generating code.
+- When an idea has an untested assumption -> write the test, not the scaffold.

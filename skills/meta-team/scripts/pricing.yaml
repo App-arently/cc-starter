@@ -1,0 +1,13 @@
+# Claude model pricing — March 2026
+# Per 1M tokens. Update when Anthropic changes pricing.
+# Source: https://docs.anthropic.com/en/docs/about-claude/pricing
+models:
+  haiku:
+    input_per_1m: 0.80
+    output_per_1m: 4.00
+  sonnet:
+    input_per_1m: 3.00
+    output_per_1m: 15.00
+  opus:
+    input_per_1m: 15.00
+    output_per_1m: 75.00
