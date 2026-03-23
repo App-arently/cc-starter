@@ -120,3 +120,7 @@ Invoke with `/my-skill` in Claude Code.
 ## License
 
 MIT
+
+## Contact
+
+Built by **Youssef Hajar** — [yhajar@biedkracht.nl](mailto:yhajar@biedkracht.nl)
