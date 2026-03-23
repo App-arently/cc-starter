@@ -123,4 +123,4 @@ MIT
 
 ## Contact
 
-Built by **Youssef Hajar** — [yhajar@biedkracht.nl](mailto:yhajar@biedkracht.nl)
+Built by **Y. Hajar** — [yhajar@biedkracht.nl](mailto:yhajar@biedkracht.nl)
